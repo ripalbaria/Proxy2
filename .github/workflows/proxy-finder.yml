@@ -1,11 +1,9 @@
-name: SonyLIV Indian Proxy Finder
+name: Parallel Indian Proxy Scanner
 
 on:
-  push:
-    branches: [ main ]      # Automatically registers the workflow on push
-  workflow_dispatch:        # Enables the manual 'Run workflow' button
   schedule:
-    - cron: '0 */2 * * *'   # Runs every 2 hours
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
 
 jobs:
   find-proxies:
@@ -17,47 +15,39 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Scrape and Test Indian Proxies
+      - name: Parallel Scrape and Test
         run: |
-          TEST_URL="https://apiv4.sonyliv.com/AGL/4.7/A/ENG/MWEB/IN/BR/CONTENT/VIDEOURL/VOD/1000051729"
+          # 1. Scrape a large list of Indian proxies
+          curl -s "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http,socks4,socks5&timeout=10000&country=IN&ssl=all&anonymity=all" > raw_list.txt
           
-          echo "Scraping fresh Indian HTTP, SOCKS4, and SOCKS5 proxies..."
-          # Scrapes fresh Indian elite proxies from a public source
-          curl -s "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http,socks4,socks5&timeout=10000&country=IN&ssl=all&anonymity=elite" > raw_list.txt
+          # 2. Prepare a test function for xargs
+          export TEST_URL="https://apiv4.sonyliv.com/AGL/4.7/A/ENG/MWEB/IN/BR/CONTENT/VIDEOURL/VOD/1000051729"
           
-          # Initialize the export file with a timestamp
-          echo "Working Indian Proxies (Checked: $(date))" > working_proxies.txt
-          echo "------------------------------------------------" >> working_proxies.txt
-          
-          FOUND_COUNT=0
-          TEST_LIMIT=100  # Scans up to 100 proxies to avoid workflow timeouts
-
-          while read -r PROXY && [ $FOUND_COUNT -lt 10 ]; do
-            [[ -z "$PROXY" ]] && continue
-            
-            echo "Testing: $PROXY"
-            
-            # Using connect-timeout to skip dead proxies quickly
-            # Filters for 'videoURL' success and skips 'EPDblocked' VPN detection
-            RESPONSE=$(curl -s -L --connect-timeout 5 --max-time 12 \
+          check_proxy() {
+            PROXY=$1
+            # Fast test: short timeouts to skip dead IPs
+            RESPONSE=$(curl -s -L --connect-timeout 4 --max-time 10 \
               --proxy "$PROXY" \
               -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' \
-              -H 'Referer: https://www.sonyliv.com/' \
-              "$TEST_URL") || continue
+              "$TEST_URL") || return 1
 
+            # Filter for videoURL and exclude EPDblocked
             if [[ "$RESPONSE" == *"videoURL"* ]] && [[ "$RESPONSE" != *"EPDblocked"* ]]; then
-              echo "MATCH FOUND: $PROXY"
-              echo "$PROXY" >> working_proxies.txt
-              ((FOUND_COUNT++))
+              echo "$PROXY" >> working_proxies_tmp.txt
             fi
-            
-            ((TEST_LIMIT--))
-            [[ $TEST_LIMIT -le 0 ]] && break
-          done < raw_list.txt
+          }
+          export -f check_proxy
 
-          if [ $FOUND_COUNT -eq 0 ]; then
-            echo "No working proxies found in this batch."
-            echo "None found in this run." >> working_proxies.txt
+          # 3. Run 20 tests at once in parallel using xargs
+          # -P 20 means 20 parallel processes; -n 1 means 1 proxy per process
+          head -n 1000 raw_list.txt | xargs -I {} -P 20 bash -c 'check_proxy "{}"'
+
+          # 4. Clean up and format the results
+          echo "Working Indian Proxies (Checked: $(date))" > working_proxies.txt
+          echo "------------------------------------------------" >> working_proxies.txt
+          if [ -f working_proxies_tmp.txt ]; then
+            sort -u working_proxies_tmp.txt >> working_proxies.txt
+            rm working_proxies_tmp.txt
           fi
 
       - name: Commit and Push Results
@@ -65,4 +55,4 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add working_proxies.txt
-          git diff --staged --quiet || (git commit -m "Update working Indian proxies" && git push)
+          git diff --staged --quiet || (git commit -m "Update working Indian proxies (Parallel Scan)" && git push)
