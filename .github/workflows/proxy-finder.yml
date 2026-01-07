@@ -1,9 +1,11 @@
 name: Parallel Indian Proxy Scanner
 
 on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
   schedule:
     - cron: '0 */4 * * *'
-  workflow_dispatch:
 
 jobs:
   find-proxies:
@@ -17,37 +19,40 @@ jobs:
 
       - name: Parallel Scrape and Test
         run: |
-          # 1. Scrape a large list of Indian proxies
+          # 1. Scrape 1000+ Indian proxies
           curl -s "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http,socks4,socks5&timeout=10000&country=IN&ssl=all&anonymity=all" > raw_list.txt
           
-          # 2. Prepare a test function for xargs
+          # 2. Define the test function and export it for subshells
           export TEST_URL="https://apiv4.sonyliv.com/AGL/4.7/A/ENG/MWEB/IN/BR/CONTENT/VIDEOURL/VOD/1000051729"
           
           check_proxy() {
             PROXY=$1
-            # Fast test: short timeouts to skip dead IPs
+            # Fast test: ignore errors and skip dead IPs
             RESPONSE=$(curl -s -L --connect-timeout 4 --max-time 10 \
               --proxy "$PROXY" \
               -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' \
-              "$TEST_URL") || return 1
+              "$TEST_URL" 2>/dev/null) || return 0
 
-            # Filter for videoURL and exclude EPDblocked
+            # Only save if videoURL is present and not blocked
             if [[ "$RESPONSE" == *"videoURL"* ]] && [[ "$RESPONSE" != *"EPDblocked"* ]]; then
               echo "$PROXY" >> working_proxies_tmp.txt
             fi
           }
           export -f check_proxy
 
-          # 3. Run 20 tests at once in parallel using xargs
-          # -P 20 means 20 parallel processes; -n 1 means 1 proxy per process
-          head -n 1000 raw_list.txt | xargs -I {} -P 20 bash -c 'check_proxy "{}"'
+          # 3. Parallel execution with xargs
+          # '_' is $0 and '{}' is $1 for the check_proxy function
+          # '|| true' ensures xargs exit code 123 doesn't crash the script
+          head -n 1000 raw_list.txt | xargs -I {} -P 25 bash -c 'check_proxy "$@"' _ {} || true
 
-          # 4. Clean up and format the results
+          # 4. Save results with timestamp
           echo "Working Indian Proxies (Checked: $(date))" > working_proxies.txt
           echo "------------------------------------------------" >> working_proxies.txt
           if [ -f working_proxies_tmp.txt ]; then
             sort -u working_proxies_tmp.txt >> working_proxies.txt
             rm working_proxies_tmp.txt
+          else
+            echo "No working proxies found in this run." >> working_proxies.txt
           fi
 
       - name: Commit and Push Results
