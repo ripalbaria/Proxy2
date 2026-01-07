@@ -2,10 +2,10 @@ name: SonyLIV Indian Proxy Finder
 
 on:
   push:
-    branches: [ main ]      # Triggers on push to help activate the UI
+    branches: [ main ]      # Automatically registers the workflow on push
   workflow_dispatch:        # Enables the manual 'Run workflow' button
   schedule:
-    - cron: '0 */2 * * *'   # Automatically runs every 2 hours
+    - cron: '0 */2 * * *'   # Runs every 2 hours
 
 jobs:
   find-proxies:
@@ -21,16 +21,16 @@ jobs:
         run: |
           TEST_URL="https://apiv4.sonyliv.com/AGL/4.7/A/ENG/MWEB/IN/BR/CONTENT/VIDEOURL/VOD/1000051729"
           
-          echo "Scraping fresh Indian HTTP and SOCKS5 proxies..."
-          # Scrapes fresh Indian elite proxies
+          echo "Scraping fresh Indian HTTP, SOCKS4, and SOCKS5 proxies..."
+          # Scrapes fresh Indian elite proxies from a public source
           curl -s "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http,socks4,socks5&timeout=10000&country=IN&ssl=all&anonymity=elite" > raw_list.txt
           
-          # Initialize the export file
+          # Initialize the export file with a timestamp
           echo "Working Indian Proxies (Checked: $(date))" > working_proxies.txt
           echo "------------------------------------------------" >> working_proxies.txt
           
           FOUND_COUNT=0
-          TEST_LIMIT=100
+          TEST_LIMIT=100  # Scans up to 100 proxies to avoid workflow timeouts
 
           while read -r PROXY && [ $FOUND_COUNT -lt 10 ]; do
             [[ -z "$PROXY" ]] && continue
@@ -38,7 +38,7 @@ jobs:
             echo "Testing: $PROXY"
             
             # Using connect-timeout to skip dead proxies quickly
-            # Checks for 'videoURL' and filters 'EPDblocked' (VPN detection)
+            # Filters for 'videoURL' success and skips 'EPDblocked' VPN detection
             RESPONSE=$(curl -s -L --connect-timeout 5 --max-time 12 \
               --proxy "$PROXY" \
               -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' \
