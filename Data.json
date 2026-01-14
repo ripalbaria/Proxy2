@@ -1,0 +1,89 @@
+{
+  "All Channels": [
+    {
+      "title": "Colors HD",
+      "poster": "https://v3img.voot.com/resizeMedium,w_1090,h_613/v3Storage/assets/colors-hindi--16x9-1714557869344.jpg",
+      "link": "https://jcevents.hotstar.com/bpk-tv/JC_ColorsHD/JCHLS/JC_ColorsHD.m3u8",
+      "type": "hls",
+      "id": "144",
+      "group": "Entertainment",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+      "headers": {
+        "Cookie": "hdntl=exp=1768450443~acl=%2f*~id=1d09e7ca36223853d000de642be0838d~data=hdntl~hmac=197f05f2d3430ccc7762fd330efe091077e4287717d3971c7b6769a0858d504f",
+        "Origin": "https://www.hotstar.com",
+        "Referer": "https://www.hotstar.com/"
+      }
+    },
+    {
+      "title": "Colors Rishtey",
+      "poster": "https://v3img.voot.com/resizeMedium,w_450,h_253/v3Storage/assets/collors-rishtey-live-channels-16x9-3-1642676080416-1674198105431-1697532377978.jpg",
+      "link": "https://jcevents.hotstar.com/bpk-tv/JC_ColorsRishtey/JCHLS/JC_ColorsRishtey.m3u8",
+      "type": "hls",
+      "id": "1370",
+      "group": "Entertainment",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+      "headers": {
+        "Cookie": "hdntl=exp=1768450443~acl=%2f*~id=1d09e7ca36223853d000de642be0838d~data=hdntl~hmac=197f05f2d3430ccc7762fd330efe091077e4287717d3971c7b6769a0858d504f",
+        "Origin": "https://www.hotstar.com",
+        "Referer": "https://www.hotstar.com/"
+      }
+    },
+    {
+      "title": "Colors Bangla HD",
+      "poster": "https://v3img.voot.com/resizeMedium,w_450,h_253/v3Storage/assets/colors-bangla-new-16x9-4-1649659533344.jpg",
+      "link": "https://jcevents.hotstar.com/bpk-tv/JC_ColorsBanglaHD/JCHLS/JC_ColorsBanglaHD.m3u8",
+      "type": "hls",
+      "id": "756",
+      "group": "Entertainment",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+      "headers": {
+        "Cookie": "hdntl=exp=1768450443~acl=%2f*~id=1d09e7ca36223853d000de642be0838d~data=hdntl~hmac=197f05f2d3430ccc7762fd330efe091077e4287717d3971c7b6769a0858d504f",
+        "Origin": "https://www.hotstar.com",
+        "Referer": "https://www.hotstar.com/"
+      }
+    },
+    {
+      "title": "Colors Kannada HD",
+      "poster": "https://v3img.voot.com/resizeMedium,w_450,h_253/v3Storage/assets/colors-kannada-16x9-1677754085834.jpg",
+      "link": "https://jcevents.hotstar.com/bpk-tv/JC_ColorsKannadaHD/JCHLS/JC_ColorsKannadaHD.m3u8",
+      "type": "hls",
+      "id": "757",
+      "group": "Entertainment",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+      "headers": {
+        "Cookie": "hdntl=exp=1768450443~acl=%2f*~id=1d09e7ca36223853d000de642be0838d~data=hdntl~hmac=197f05f2d3430ccc7762fd330efe091077e4287717d3971c7b6769a0858d504f",
+        "Origin": "https://www.hotstar.com",
+        "Referer": "https://www.hotstar.com/"
+      }
+    },
+    {
+      "title": "Star Sports 2 Hindi HD",
+      "poster": "https://dvdh7g0f0hwck.cloudfront.net/assets/images/channel/StarSports2HindiHD_Transparent_c72d6289-27aa-422d-8420-40135329a5b6.png",
+      "link": "https://jcevents.hotstar.com/bpk-tv/f0e3e64ae415771d8e460317ce97aa5e/Fallback/f0e3e64ae415771d8e460317ce97aa5e.m3u8",
+      "type": "hls",
+      "id": "1033",
+      "group": "Sports",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+      "headers": {
+        "Cookie": "hdntl=exp=1768450443~acl=%2f*~id=1d09e7ca36223853d000de642be0838d~data=hdntl~hmac=197f05f2d3430ccc7762fd330efe091077e4287717d3971c7b6769a0858d504f",
+        "Origin": "https://www.hotstar.com",
+        "Referer": "https://www.hotstar.com/"
+      }
+    },
+    {
+      "title": "StarPlus",
+      "poster": "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/7415/567415-h",
+      "link": "https://livetv.hotstar.com/mp1/gec-india-1540057045/a73567ab8abd4680bc8206dd0c625cb0/index.mpd",
+      "type": "dash",
+      "id": "45502",
+      "group": "Others",
+      "user_agent": "Hotstar;in.startv.hotstar/25.01.27.5.3788 (Android/13)",
+      "headers": {
+        "Referer": "https://www.hotstar.com/",
+        "Origin": "https://www.hotstar.com",
+        "Cookie": "hdntl=exp=1768450443~acl=%2f*~id=1d09e7ca36223853d000de642be0838d~data=hdntl~hmac=197f05f2d3430ccc7762fd330efe091077e4287717d3971c7b6769a0858d504f"
+      },
+      "license_url": "https://sony-token.vercel.app/api/results.php?keyid=17a6e6ef02f74d9bbce4640371d40000&key=7a89315d2ec84875901dce2d3044556c"
+    }
+  ]
+}
